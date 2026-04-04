@@ -1,3 +1,27 @@
 [gd_scene format=3 uid="uid://dusp7akl72ujd"]
 
+[ext_resource type="Script" uid="uid://dic1foe5ls06j" path="res://scenes/main/GameManager.gd" id="1_u1xfj"]
+[ext_resource type="PackedScene" uid="uid://b0nfjcpdy2dfr" path="res://scenes/jugador/Jugador.tscn" id="2_nha0i"]
+[ext_resource type="PackedScene" uid="uid://cm07e55laa7t3" path="res://scenes/enemigos/EnemigoBasico.tscn" id="2_q24mn"]
+[ext_resource type="PackedScene" uid="uid://h7h8yrpy82nw" path="res://scenes/ui/HUD.tscn" id="4_gyg6b"]
+
 [node name="Main" type="Node2D" unique_id=2045298058]
+script = ExtResource("1_u1xfj")
+escena_enemigo = ExtResource("2_q24mn")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1246450690]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 1, 1)
+
+[node name="Jugador" parent="." unique_id=503175505 instance=ExtResource("2_nha0i")]
+
+[node name="HUD" parent="." unique_id=100887434 instance=ExtResource("4_gyg6b")]

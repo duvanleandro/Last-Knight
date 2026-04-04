@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cm07e55laa7t3"]
+
+[ext_resource type="Script" uid="uid://dg1xnqsnfyyq0" path="res://scenes/enemigos/EnemigoBasico.gd" id="1_nmn3y"]
+[ext_resource type="PackedScene" uid="uid://dcmuji73lcblh" path="res://scenes/ui/BarraVida.tscn" id="2_c5tn5"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nmn3y"]
+size = Vector2(32, 32)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m0ofi"]
+
+[node name="EnemigoBasico" type="CharacterBody2D" unique_id=616649758]
+script = ExtResource("1_nmn3y")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=664729430]
+modulate = Color(1, 0, 0, 1)
+texture = SubResource("PlaceholderTexture2D_nmn3y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1336009938]
+shape = SubResource("CapsuleShape2D_m0ofi")
+
+[node name="BarraVida" parent="." unique_id=1236818296 instance=ExtResource("2_c5tn5")]

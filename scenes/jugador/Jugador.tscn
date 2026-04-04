@@ -1,3 +1,24 @@
 [gd_scene format=3 uid="uid://b0nfjcpdy2dfr"]
 
-[node name="Jugador" type="Node2D" unique_id=1579824091]
+[ext_resource type="Script" uid="uid://cisbgwmm3nwcd" path="res://scenes/jugador/Jugador.gd" id="1_qcfqa"]
+[ext_resource type="PackedScene" uid="uid://ccf1xiyn2bgsj" path="res://scenes/armas/Proyectil.tscn" id="2_411pj"]
+[ext_resource type="PackedScene" uid="uid://dcmuji73lcblh" path="res://scenes/ui/BarraVida.tscn" id="2_j5vqh"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qcfqa"]
+size = Vector2(32, 32)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_j5vqh"]
+
+[node name="Jugador" type="CharacterBody2D" unique_id=503175505 groups=["Jugador"]]
+script = ExtResource("1_qcfqa")
+escena_proyectil = ExtResource("2_411pj")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1395687878]
+texture = SubResource("PlaceholderTexture2D_qcfqa")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2100567897]
+shape = SubResource("CapsuleShape2D_j5vqh")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1431004965]
+
+[node name="BarraVida" parent="." unique_id=1236818296 instance=ExtResource("2_j5vqh")]
