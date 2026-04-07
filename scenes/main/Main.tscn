@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://dusp7akl72ujd"]
 
-[ext_resource type="Script" uid="uid://dic1foe5ls06j" path="res://scenes/main/GameManager.gd" id="1_u1xfj"]
+[ext_resource type="Script" uid="uid://btkwcteip56d5" path="res://scenes/main/GameManager.gd" id="1_u1xfj"]
 [ext_resource type="PackedScene" uid="uid://b0nfjcpdy2dfr" path="res://scenes/jugador/Jugador.tscn" id="2_nha0i"]
 [ext_resource type="PackedScene" uid="uid://cm07e55laa7t3" path="res://scenes/enemigos/EnemigoBasico.tscn" id="2_q24mn"]
 [ext_resource type="PackedScene" uid="uid://h7h8yrpy82nw" path="res://scenes/ui/HUD.tscn" id="4_gyg6b"]
+[ext_resource type="PackedScene" uid="uid://bdr7ncgs34hcj" path="res://scenes/ui/PantallaPreguntas.tscn" id="5_1rhdn"]
+[ext_resource type="PackedScene" uid="uid://dk7ho3eyejrcj" path="res://scenes/ui/PantallaSeleccionPoder.tscn" id="6_sjxhf"]
 
 [node name="Main" type="Node2D" unique_id=2045298058]
 script = ExtResource("1_u1xfj")
@@ -25,3 +27,7 @@ color = Color(0, 0, 1, 1)
 [node name="Jugador" parent="." unique_id=503175505 instance=ExtResource("2_nha0i")]
 
 [node name="HUD" parent="." unique_id=100887434 instance=ExtResource("4_gyg6b")]
+
+[node name="PantallaPreguntas" parent="." unique_id=846468680 instance=ExtResource("5_1rhdn")]
+
+[node name="PantallaSeleccionPoder" parent="." unique_id=1517277543 instance=ExtResource("6_sjxhf")]

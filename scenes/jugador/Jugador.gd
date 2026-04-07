@@ -1,11 +1,12 @@
 extends CharacterBody2D
 
-const VELOCIDAD = 200.0
+var VELOCIDAD = 200.0
 var vida: float = 100.0
 var vida_maxima: float = 100.0
 var danio_ataque: float = 25.0
 var cadencia: float = 0.5
 var timer_ataque: float = 0.0
+var rango_ataque: float = 300.0
 
 @export var escena_proyectil: PackedScene
 @onready var barra_vida = $BarraVida
