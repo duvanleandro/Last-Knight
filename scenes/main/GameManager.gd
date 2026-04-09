@@ -1,6 +1,10 @@
 extends Node
 
-@export var escena_enemigo: PackedScene
+@export var escena_enemigo_basico: PackedScene
+@export var escena_enemigo_rapido: PackedScene
+@export var escena_enemigo_tanque: PackedScene
+@export var escena_enemigo_especial: PackedScene
+
 var tiempo_entre_spawns: float = 2.0
 var timer_spawn: float = 0.0
 var direccion_jugador: Vector2 = Vector2.ZERO
@@ -9,13 +13,12 @@ var posicion_anterior: Vector2 = Vector2.ZERO
 @onready var pantalla_preguntas = $PantallaPreguntas
 @onready var pantalla_poderes = $PantallaSeleccionPoder
 
-# Poderes disponibles
 var ventajas = [
 	{"nombre": "⚔️ Daño+", "descripcion": "+25% daño", "tipo": "danio", "valor": 0.25},
 	{"nombre": "💨 Velocidad+", "descripcion": "+20% velocidad", "tipo": "velocidad", "valor": 0.20},
 	{"nombre": "🔥 Cadencia+", "descripcion": "-20% tiempo entre ataques", "tipo": "cadencia", "valor": -0.20},
 	{"nombre": "❤️ Vida+", "descripcion": "+30 vida máxima", "tipo": "vida", "valor": 30.0},
-	{"nombre": "🎯 Rango+", "descripcion": "+100 rango de ataque", "tipo": "rango", "valor": 100.0},
+	{"nombre": "🔱 Penetración+", "descripcion": "Proyectil atraviesa +1 enemigo", "tipo": "penetracion", "valor": 1},
 ]
 
 var desventajas = [
@@ -30,11 +33,48 @@ func _ready() -> void:
 	pantalla_poderes.poder_elegido.connect(_on_poder_elegido)
 
 func _process(delta: float) -> void:
+	if OS.is_debug_build() and Input.is_action_just_pressed("ui_page_down"):
+		EstadoJuego.tiempo_transcurrido += 300.0
 	_actualizar_direccion_jugador()
+	_actualizar_dificultad()
 	timer_spawn += delta
 	if timer_spawn >= tiempo_entre_spawns:
 		timer_spawn = 0.0
 		_spawnear_enemigo()
+
+func _actualizar_dificultad() -> void:
+	var fase = EstadoJuego.get_fase_actual()
+	match fase:
+		1: tiempo_entre_spawns = 2.0
+		2: tiempo_entre_spawns = 1.4
+		3: tiempo_entre_spawns = 0.9
+		4: tiempo_entre_spawns = 0.5
+
+func _elegir_escena_enemigo() -> PackedScene:
+	var fase = EstadoJuego.get_fase_actual()
+	var opciones: Array = []
+	match fase:
+		1:
+			opciones = [
+				escena_enemigo_basico, escena_enemigo_basico, escena_enemigo_basico
+			]
+		2:
+			opciones = [
+				escena_enemigo_basico, escena_enemigo_basico,
+				escena_enemigo_rapido, escena_enemigo_tanque
+			]
+		3:
+			opciones = [
+				escena_enemigo_basico, escena_enemigo_rapido,
+				escena_enemigo_tanque, escena_enemigo_especial
+			]
+		4:
+			opciones = [
+				escena_enemigo_rapido, escena_enemigo_rapido,
+				escena_enemigo_tanque, escena_enemigo_especial,
+				escena_enemigo_especial
+			]
+	return opciones[randi() % opciones.size()]
 
 func _on_jugador_subio_nivel() -> void:
 	var fase = EstadoJuego.get_fase_actual()
@@ -57,14 +97,16 @@ func _on_poder_elegido(poder: Dictionary) -> void:
 		"danio":
 			jugador.danio_ataque *= (1.0 + poder.valor)
 		"velocidad":
-			jugador.VELOCIDAD *= (1.0 + poder.valor) # Nota: cambiar VELOCIDAD a var
+			jugador.VELOCIDAD *= (1.0 + poder.valor)
 		"cadencia":
 			jugador.cadencia *= (1.0 + poder.valor)
 		"vida":
 			jugador.vida_maxima += poder.valor
 			jugador.vida = min(jugador.vida + poder.valor, jugador.vida_maxima)
-		"rango":
-			jugador.rango_ataque += poder.valor
+		"penetracion":
+			jugador.penetracion += int(poder.valor)
+			if jugador.reduccion_danio_penetracion > 0.05:
+				jugador.reduccion_danio_penetracion = max(0.05, jugador.reduccion_danio_penetracion - 0.08)
 
 func _actualizar_direccion_jugador() -> void:
 	var jugador = get_tree().get_first_node_in_group("jugador")
@@ -76,7 +118,8 @@ func _actualizar_direccion_jugador() -> void:
 	posicion_anterior = jugador.global_position
 
 func _spawnear_enemigo() -> void:
-	if escena_enemigo == null:
+	var escena = _elegir_escena_enemigo()
+	if escena == null:
 		return
 	var jugador = get_tree().get_first_node_in_group("jugador")
 	if jugador == null:
@@ -97,7 +140,7 @@ func _spawnear_enemigo() -> void:
 		1: pos = Vector2(randf_range(-mitad_w, mitad_w), mitad_h)
 		2: pos = Vector2(-mitad_w, randf_range(-mitad_h, mitad_h))
 		3: pos = Vector2(mitad_w, randf_range(-mitad_h, mitad_h))
-	var enemigo = escena_enemigo.instantiate()
+	var enemigo = escena.instantiate()
 	enemigo.global_position = jugador.global_position + pos
 	get_tree().current_scene.add_child(enemigo)
 

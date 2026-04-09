@@ -6,7 +6,10 @@ var vida_maxima: float = 100.0
 var danio_ataque: float = 25.0
 var cadencia: float = 0.5
 var timer_ataque: float = 0.0
-var rango_ataque: float = 300.0
+var penetracion: int = 0
+var reduccion_danio_penetracion: float = 0.5
+var knockback_velocidad: Vector2 = Vector2.ZERO
+var knockback_fuerza: float = 800.0
 
 @export var escena_proyectil: PackedScene
 @onready var barra_vida = $BarraVida
@@ -30,7 +33,12 @@ func _mover(delta: float) -> void:
 		direccion.y -= 1
 	if direccion != Vector2.ZERO:
 		direccion = direccion.normalized()
-	velocity = direccion * VELOCIDAD
+	if knockback_velocidad.length() > 1.0:
+		knockback_velocidad *= 0.85
+		velocity = knockback_velocidad + (direccion * VELOCIDAD * 0.3)
+	else:
+		knockback_velocidad = Vector2.ZERO
+		velocity = direccion * VELOCIDAD
 	move_and_slide()
 
 func _atacar(delta: float) -> void:
@@ -45,11 +53,16 @@ func _atacar(delta: float) -> void:
 	var direccion = (pos_mouse - global_position).normalized()
 	var proyectil = escena_proyectil.instantiate()
 	get_tree().current_scene.add_child(proyectil)
-	proyectil.inicializar(global_position, direccion, danio_ataque)
+	proyectil.inicializar(global_position, direccion, danio_ataque, penetracion, reduccion_danio_penetracion)
 	timer_ataque = 0.0
 
-func recibir_danio(cantidad: float) -> void:
+func aplicar_knockback(origen: Vector2) -> void:
+	knockback_velocidad = (global_position - origen).normalized() * knockback_fuerza
+
+func recibir_danio(cantidad: float, origen: Vector2 = Vector2.ZERO) -> void:
 	vida -= cantidad
+	if origen != Vector2.ZERO:
+		knockback_velocidad = (global_position - origen).normalized() * knockback_fuerza
 	barra_vida.actualizar(vida, vida_maxima)
 	if vida <= 0:
 		queue_free()

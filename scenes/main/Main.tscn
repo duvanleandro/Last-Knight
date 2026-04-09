@@ -3,13 +3,19 @@
 [ext_resource type="Script" uid="uid://btkwcteip56d5" path="res://scenes/main/GameManager.gd" id="1_u1xfj"]
 [ext_resource type="PackedScene" uid="uid://b0nfjcpdy2dfr" path="res://scenes/jugador/Jugador.tscn" id="2_nha0i"]
 [ext_resource type="PackedScene" uid="uid://cm07e55laa7t3" path="res://scenes/enemigos/EnemigoBasico.tscn" id="2_q24mn"]
+[ext_resource type="PackedScene" uid="uid://c6qronlesn2e" path="res://scenes/enemigos/EnemigoRapido.tscn" id="3_ostsq"]
+[ext_resource type="PackedScene" uid="uid://ds1knp5dthn27" path="res://scenes/enemigos/EnemigoTanque.tscn" id="4_3km4f"]
 [ext_resource type="PackedScene" uid="uid://h7h8yrpy82nw" path="res://scenes/ui/HUD.tscn" id="4_gyg6b"]
 [ext_resource type="PackedScene" uid="uid://bdr7ncgs34hcj" path="res://scenes/ui/PantallaPreguntas.tscn" id="5_1rhdn"]
+[ext_resource type="PackedScene" uid="uid://cr4xyq3bl1rud" path="res://scenes/enemigos/EnemigoEspecial.tscn" id="5_qkm1d"]
 [ext_resource type="PackedScene" uid="uid://dk7ho3eyejrcj" path="res://scenes/ui/PantallaSeleccionPoder.tscn" id="6_sjxhf"]
 
 [node name="Main" type="Node2D" unique_id=2045298058]
 script = ExtResource("1_u1xfj")
-escena_enemigo = ExtResource("2_q24mn")
+escena_enemigo_basico = ExtResource("2_q24mn")
+escena_enemigo_rapido = ExtResource("3_ostsq")
+escena_enemigo_tanque = ExtResource("4_3km4f")
+escena_enemigo_especial = ExtResource("5_qkm1d")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1246450690]
 custom_minimum_size = Vector2(50, 50)

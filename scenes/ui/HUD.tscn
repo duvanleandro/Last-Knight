@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://h7h8yrpy82nw"]
 
-[ext_resource type="Script" uid="uid://bggdruuilu0tw" path="res://scenes/ui/HUD.gd" id="1_kw0id"]
+[ext_resource type="Script" uid="uid://dv1wwg18axfh" path="res://scenes/ui/HUD.gd" id="1_kw0id"]
 
 [node name="HUD" type="CanvasLayer" unique_id=100887434]
 script = ExtResource("1_kw0id")
@@ -18,3 +18,9 @@ text = "Nivel 1"
 [node name="BarraXP" type="ProgressBar" parent="VBoxContainer" unique_id=442934520]
 layout_mode = 2
 show_percentage = false
+
+[node name="LabelTiempo" type="Label" parent="VBoxContainer" unique_id=1804056970]
+layout_mode = 2
+
+[node name="LabelFase" type="Label" parent="VBoxContainer" unique_id=2143838995]
+layout_mode = 2

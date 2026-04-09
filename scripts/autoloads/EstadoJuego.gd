@@ -41,3 +41,7 @@ func get_fase_actual() -> int:
 		return 3
 	else:
 		return 4
+
+func _process(delta: float) -> void:
+	if not get_tree().paused:
+		tiempo_transcurrido += delta
