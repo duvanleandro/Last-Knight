@@ -1,5 +1,4 @@
 [gd_scene format=3 uid="uid://dusp7akl72ujd"]
-
 [ext_resource type="Script" uid="uid://btkwcteip56d5" path="res://scenes/main/GameManager.gd" id="1_u1xfj"]
 [ext_resource type="PackedScene" uid="uid://b0nfjcpdy2dfr" path="res://scenes/jugador/Jugador.tscn" id="2_nha0i"]
 [ext_resource type="PackedScene" uid="uid://cm07e55laa7t3" path="res://scenes/enemigos/EnemigoBasico.tscn" id="2_q24mn"]
@@ -9,14 +8,13 @@
 [ext_resource type="PackedScene" uid="uid://bdr7ncgs34hcj" path="res://scenes/ui/PantallaPreguntas.tscn" id="5_1rhdn"]
 [ext_resource type="PackedScene" uid="uid://cr4xyq3bl1rud" path="res://scenes/enemigos/EnemigoEspecial.tscn" id="5_qkm1d"]
 [ext_resource type="PackedScene" uid="uid://dk7ho3eyejrcj" path="res://scenes/ui/PantallaSeleccionPoder.tscn" id="6_sjxhf"]
-
+[ext_resource type="PackedScene" path="res://scenes/ui/MenuPausa.tscn" id="7_pausa"]
 [node name="Main" type="Node2D" unique_id=2045298058]
 script = ExtResource("1_u1xfj")
 escena_enemigo_basico = ExtResource("2_q24mn")
 escena_enemigo_rapido = ExtResource("3_ostsq")
 escena_enemigo_tanque = ExtResource("4_3km4f")
 escena_enemigo_especial = ExtResource("5_qkm1d")
-
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1246450690]
 custom_minimum_size = Vector2(50, 50)
 anchors_preset = 15
@@ -29,11 +27,8 @@ offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 1, 1)
-
 [node name="Jugador" parent="." unique_id=503175505 instance=ExtResource("2_nha0i")]
-
 [node name="HUD" parent="." unique_id=100887434 instance=ExtResource("4_gyg6b")]
-
 [node name="PantallaPreguntas" parent="." unique_id=846468680 instance=ExtResource("5_1rhdn")]
-
 [node name="PantallaSeleccionPoder" parent="." unique_id=1517277543 instance=ExtResource("6_sjxhf")]
+[node name="MenuPausa" parent="." instance=ExtResource("7_pausa")]

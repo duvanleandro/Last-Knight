@@ -27,7 +27,12 @@ func _physics_process(delta: float) -> void:
 		jugador = get_tree().get_first_node_in_group("jugador")
 		return
 	var direccion = (jugador.global_position - global_position).normalized()
-	velocity = direccion * velocidad
+	if empuje.length() > 10.0:
+		empuje = empuje.lerp(Vector2.ZERO, 0.15)
+		velocity = empuje
+	else:
+		empuje = Vector2.ZERO
+		velocity = direccion * velocidad
 	move_and_slide()
 	timer_danio += delta
 	if timer_danio >= cadencia_danio:
@@ -35,6 +40,11 @@ func _physics_process(delta: float) -> void:
 		if distancia < 32.0:
 			jugador.recibir_danio(danio, global_position)
 			timer_danio = 0.0
+
+var empuje: Vector2 = Vector2.ZERO
+
+func recibir_empuje(fuerza: Vector2) -> void:
+	empuje = fuerza
 
 func recibir_danio(cantidad: float) -> void:
 	vida -= cantidad

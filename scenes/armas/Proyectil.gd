@@ -3,33 +3,43 @@ extends Area2D
 var velocidad: float = 400.0
 var danio: float = 25.0
 var direccion: Vector2 = Vector2.ZERO
-var penetracion: int = 0
-var reduccion_danio: float = 0.5
+var golpes_completos: int = 0
+var multiplicador_parcial: float = 0.0
 var enemigos_golpeados: Array = []
+var golpes_dados: int = 0
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
-func inicializar(pos: Vector2, dir: Vector2, dmg: float, pen: int = 0, red: float = 0.5) -> void:
+func inicializar(pos: Vector2, dir: Vector2, dmg: float, completos: int = 0, parcial: float = 0.0) -> void:
 	global_position = pos
 	direccion = dir.normalized()
 	danio = dmg
-	penetracion = pen
-	reduccion_danio = red
+	golpes_completos = completos
+	multiplicador_parcial = parcial
 
 func _physics_process(delta: float) -> void:
 	global_position += direccion * velocidad * delta
-	# Destruir si sale muy lejos
 	var jugador = get_tree().get_first_node_in_group("jugador")
 	if jugador and global_position.distance_to(jugador.global_position) > 800.0:
 		queue_free()
 
 func _on_body_entered(body: Node) -> void:
-	if body.is_in_group("enemigos") and not body in enemigos_golpeados:
-		enemigos_golpeados.append(body)
+	if not body.is_in_group("enemigos"):
+		return
+	if body in enemigos_golpeados:
+		return
+	enemigos_golpeados.append(body)
+
+	if golpes_dados < golpes_completos:
+		# Golpes completos: daño total, sigue viajando
 		body.recibir_danio(danio)
-		if penetracion <= 0:
-			queue_free()
-		else:
-			penetracion -= 1
-			danio *= reduccion_danio
+		golpes_dados += 1
+	elif multiplicador_parcial > 0.0:
+		# Golpe parcial: daño reducido, se destruye
+		body.recibir_danio(danio * multiplicador_parcial)
+		queue_free()
+	else:
+		# Sin penetración: daño normal y se destruye
+		body.recibir_danio(danio)
+		queue_free()
