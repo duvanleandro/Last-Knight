@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://b0nfjcpdy2dfr"]
 
-[ext_resource type="Script" uid="uid://cisbgwmm3nwcd" path="res://scenes/jugador/Jugador.gd" id="1_qcfqa"]
+[ext_resource type="Script" uid="uid://dgstevuhmo1wx" path="res://scenes/jugador/Jugador.gd" id="1_qcfqa"]
+[ext_resource type="PackedScene" path="res://scenes/jugador/Satelite.tscn" id="2_1myul"]
+[ext_resource type="PackedScene" uid="uid://dx1bng5al0kth" path="res://scenes/jugador/Senuelo.tscn" id="2_01vmo"]
 [ext_resource type="PackedScene" uid="uid://ccf1xiyn2bgsj" path="res://scenes/armas/Proyectil.tscn" id="2_411pj"]
 [ext_resource type="PackedScene" uid="uid://dcmuji73lcblh" path="res://scenes/ui/BarraVida.tscn" id="2_j5vqh"]
+[ext_resource type="Script" uid="uid://bsfbqtuaxk7pn" path="res://scenes/jugador/EscudoVisual.gd" id="99_escvis"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qcfqa"]
 size = Vector2(32, 32)
@@ -11,6 +14,8 @@ size = Vector2(32, 32)
 
 [node name="Jugador" type="CharacterBody2D" unique_id=503175505 groups=["Jugador"]]
 script = ExtResource("1_qcfqa")
+escena_satelite = ExtResource("2_1myul")
+escena_senuelo = ExtResource("2_01vmo")
 escena_proyectil = ExtResource("2_411pj")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1395687878]
@@ -22,3 +27,6 @@ shape = SubResource("CapsuleShape2D_j5vqh")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1431004965]
 
 [node name="BarraVida" parent="." unique_id=1236818296 instance=ExtResource("2_j5vqh")]
+
+[node name="EscudoVisual" type="Node2D" parent="." unique_id=-293967295]
+script = ExtResource("99_escvis")

@@ -8,6 +8,13 @@ var xp_para_siguiente_nivel: float = 50.0
 var tiempo_transcurrido: float = 0.0
 var enemigos_eliminados: int = 0
 var poderes_activos: Array = []
+var registro_poderes: Dictionary = {}
+
+func registrar_poder(tipo: String, nombre: String) -> void:
+	if tipo in registro_poderes:
+		registro_poderes[tipo]["nivel"] += 1
+	else:
+		registro_poderes[tipo] = {"nombre": nombre, "nivel": 1}
 
 func reiniciar() -> void:
 	vida_jugador = 100.0
@@ -18,6 +25,7 @@ func reiniciar() -> void:
 	tiempo_transcurrido = 0.0
 	enemigos_eliminados = 0
 	poderes_activos = []
+	registro_poderes = {}
 
 func agregar_xp(cantidad: float) -> void:
 	xp_jugador += cantidad

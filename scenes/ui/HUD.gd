@@ -5,8 +5,14 @@ extends CanvasLayer
 @onready var label_tiempo: Label = $VBoxContainer/LabelTiempo
 @onready var label_fase: Label = $VBoxContainer/LabelFase
 @onready var escudo_hud: Control = $EscudoHUD
-@onready var arco_recarga: TextureProgressBar = $EscudoHUD/ArcoRecarga
+@onready var arco_escudo = $EscudoHUD/ArcoEscudo
 @onready var label_golpes: Label = $EscudoHUD/LabelGolpes
+@onready var senuelo_hud: Control = $SenueloHUD
+@onready var arco_senuelo = $SenueloHUD/ArcoSenuelo
+@onready var label_senuelo: Label = $SenueloHUD/LabelSenuelo
+@onready var meteorito_hud: Control = $MetoritoHUD
+@onready var arco_meteorito = $MetoritoHUD/ArcoMetorito
+@onready var label_meteorito: Label = $MetoritoHUD/LabelMetorito
 
 var nombres_fases = {
 	1: "⚔️ Fase 1 — Inicio",
@@ -15,34 +21,32 @@ var nombres_fases = {
 	4: "👹 Fase 4 — Finalización"
 }
 
-# Colores por golpe restante
-var colores_escudo = [
-	Color(1.0, 0.2, 0.2),   # rojo  — último golpe
-	Color(1.0, 0.85, 0.0),  # amarillo — golpe intermedio
-	Color(0.2, 1.0, 0.3),   # verde — golpe lleno
-]
+var COLOR_VERDE    = Color(0.2, 1.0, 0.3)
+var COLOR_AMARILLO = Color(1.0, 0.85, 0.0)
+var COLOR_ROJO     = Color(1.0, 0.2, 0.2)
+var COLOR_GRIS     = Color(0.4, 0.4, 0.4)
+var COLOR_MAGENTA  = Color(0.8, 0.2, 1.0)
+var COLOR_NARANJA  = Color(1.0, 0.5, 0.0)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not is_instance_valid(label_nivel) or not is_instance_valid(barra_xp):
 		return
 
-	# Nivel y XP
 	label_nivel.text = "Nivel " + str(EstadoJuego.nivel_jugador)
 	barra_xp.max_value = EstadoJuego.xp_para_siguiente_nivel
 	barra_xp.value = EstadoJuego.xp_jugador
 
-	# Cronómetro
 	var segundos_totales = int(EstadoJuego.tiempo_transcurrido)
 	var minutos = segundos_totales / 60
 	var segundos = segundos_totales % 60
 	label_tiempo.text = "⏱ %02d:%02d" % [minutos, segundos]
 
-	# Fase actual
 	var fase = EstadoJuego.get_fase_actual()
 	label_fase.text = nombres_fases[fase]
 
-	# Escudo
 	_actualizar_escudo_hud()
+	_actualizar_senuelo_hud()
+	_actualizar_meteorito_hud()
 
 func _actualizar_escudo_hud() -> void:
 	var jugador = get_tree().get_first_node_in_group("jugador")
@@ -54,28 +58,61 @@ func _actualizar_escudo_hud() -> void:
 	var golpes_max = jugador.escudo_golpes_max
 	var golpes_actual = jugador.escudo_golpes_actual
 	var timer = jugador.escudo_timer
-	var duracion = 30.0 if jugador.escudo_roto else 15.0
+	var duracion = jugador.escudo_cooldown_roto if jugador.escudo_roto else jugador.escudo_cooldown_parcial
 
-	# Color según golpes restantes
-	var idx = clamp(golpes_actual - 1, 0, colores_escudo.size() - 1)
+	var color: Color
 	if golpes_actual == 0:
-		# Roto — mostrar recarga en gris
-		arco_recarga.modulate = Color(0.5, 0.5, 0.5)
+		color = COLOR_GRIS
+	elif golpes_actual == 1:
+		color = COLOR_ROJO
+	elif golpes_actual == 2:
+		color = COLOR_AMARILLO
 	else:
-		arco_recarga.modulate = colores_escudo[idx]
+		color = COLOR_VERDE
 
-	# Arco de recarga
+	var progreso: float
 	if golpes_actual >= golpes_max:
-		# Escudo completo — arco lleno
-		arco_recarga.value = 100.0
+		progreso = 1.0
 	else:
-		# Mostrando recarga — arco se llena conforme pasa el tiempo
-		var progreso = 1.0 - (timer / duracion)
-		arco_recarga.value = progreso * 100.0
+		progreso = 1.0 - (timer / duracion)
 
-	# Etiqueta central
+	arco_escudo.actualizar(progreso, color)
+
 	if golpes_actual == 0:
-		var segundos_restantes = int(ceil(timer))
-		label_golpes.text = str(segundos_restantes)
+		label_golpes.text = str(int(ceil(timer)))
+	elif golpes_actual == golpes_max:
+		label_golpes.text = "🛡"
 	else:
-		label_golpes.text = "🛡" if golpes_actual == golpes_max else "🛡 %d" % golpes_actual
+		label_golpes.text = "🛡%d" % golpes_actual
+
+func _actualizar_senuelo_hud() -> void:
+	var jugador = get_tree().get_first_node_in_group("jugador")
+	if jugador == null or jugador.senuelo_nivel == 0:
+		senuelo_hud.visible = false
+		return
+
+	senuelo_hud.visible = true
+
+	if jugador.senuelo_activo:
+		arco_senuelo.actualizar(1.0, COLOR_MAGENTA)
+		label_senuelo.text = "🪄"
+	else:
+		var progreso = jugador.senuelo_timer / jugador.senuelo_cooldown
+		var segundos_restantes = int(ceil(jugador.senuelo_cooldown - jugador.senuelo_timer))
+		var color = COLOR_MAGENTA if progreso >= 1.0 else COLOR_GRIS
+		arco_senuelo.actualizar(progreso, color)
+		label_senuelo.text = "🪄" if progreso >= 1.0 else str(segundos_restantes)
+
+func _actualizar_meteorito_hud() -> void:
+	var jugador = get_tree().get_first_node_in_group("jugador")
+	if jugador == null or jugador.meteorito_nivel == 0:
+		meteorito_hud.visible = false
+		return
+
+	meteorito_hud.visible = true
+	var cooldown = 60.0 if jugador.meteorito_nivel >= 6 else (40.0 if jugador.meteorito_nivel >= 2 else 20.0)
+	var progreso = jugador.meteorito_timer / cooldown
+	var segundos_restantes = int(ceil(cooldown - jugador.meteorito_timer))
+	var color = COLOR_NARANJA if progreso >= 1.0 else COLOR_GRIS
+	arco_meteorito.actualizar(progreso, color)
+	label_meteorito.text = "☄️" if progreso >= 1.0 else str(segundos_restantes)
